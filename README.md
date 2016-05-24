@@ -45,7 +45,7 @@ which are defined as required fields per the [CDR Schema wiki page](https://meme
 This script requires Python 2.7. To execute it you must provide the path to the input file (`input_file`) and the desired path of the output (`result_file`).
 
 ```
-python cdr_validation.py --input_file=input.gz --result_file=output
+python cdr_validation.py --input_file=input.gz --result_file=output --es_conn=https://USER:PASSWORD@elasticsearch-instance.com:9200
 ```
 
 The script returns the number of documents that passed, the number that failed, and the time to execute the script. For example:
