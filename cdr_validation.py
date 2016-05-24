@@ -2,6 +2,7 @@ import json
 import argparse
 import gzip as gz
 import datetime
+from elasticsearch import Elasticsearch
 
 def is_media(doc):
     ''' Checks whether item is media '''
@@ -10,11 +11,12 @@ def is_media(doc):
     else:
         return False
 
-def test_media(doc, _ids, media_fields):
+def test_media(doc, _ids, media_fields, es):
     ''' Checks media fields exist as keys in doc '''    
     parent = doc.get('obj_parent')
     if parent not in _ids:
-        return (False, "Missing parent document")
+        if not test_obj_parent(es, parent):
+            return (False, "Missing parent document")
     else:
         if all(k in doc for k in media_fields):
             return (True, "Passed")
@@ -28,6 +30,20 @@ def test_crawl(doc, crawl_fields):
     else:
         return (False, "Missing required field")
 
+def test_obj_parent(es, obj_parent):
+    q = {
+      "query": {
+        "terms": {
+          "_id": [ obj_parent ] 
+        }
+      }
+    }
+    res = es.search(body=q, index='memex-domains', size=1)
+    if len(res.get('hits',{}).get('hits',{})) != 1:
+        return False
+    else:
+        return True
+
 media_fields = ['_id','timestamp','content_type','obj_original_url','obj_parent','obj_stored_url','team','version']
 crawl_fields = ['_id','timestamp','content_type','crawler','extracted_metadata','extracted_text','raw_content','team','url','version']
 
@@ -40,13 +56,17 @@ if __name__ == '__main__':
         epilog=desc)
 
     parser.add_argument("--input_file", help="path to the gzip file for testing")    
-    parser.add_argument("--result_file", help="path to the gzip file for testing")    
+    parser.add_argument("--result_file", help="path to the gzip file for testing")
+    parser.add_argument("--es_conn", help="elasticsearch connection")    
     
     args = parser.parse_args()
 
     # parsed argument for input/result file
     input_file = args.input_file
     result_file = args.result_file
+    es_conn = args.es_conn
+
+    es = Elasticsearch(es_conn, timeout=60)
 
     # generate input _ids dictionary
     _ids = {}

@@ -1,0 +1,3 @@
+{"context": "Dictionary of Scrapy Cluster context information",
+ "headers": "Dictionary of headers derived from Scrapy Cluster scrape",
+ "status": "Integer status code returned by crawled page"}
