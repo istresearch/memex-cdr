@@ -77,17 +77,17 @@ if __name__ == '__main__':
     # iterate over input file to generate dictionary of _id's
     with gz.open(input_file,'r') as fp:
         for line in fp:
-            _id = json.loads(line).get('_id')
+            _id = json.loads(line.decode('utf-8')).get('_id')
             _ids[_id] = ''
         fp.close()
     
     # using _ids dictionary, iterate over input and test fields
     with gz.open(input_file,'r') as fp:
         for line in fp:
-            doc = json.loads(line)
+            doc = json.loads(line.decode('utf-8'))
             _id = doc.get('_id')
             if is_media(doc):
-                result = test_media(doc, _ids, media_fields)
+                result = test_media(doc, _ids, media_fields, es)
             else:
                 result = test_crawl(doc, crawl_fields)
             _ids[_id] = result
@@ -113,6 +113,6 @@ if __name__ == '__main__':
     end = datetime.datetime.now()
     total_time = end - start
     
-    print str(passed) + ' documents passed.'
-    print str(failed) + ' documents failed.'
-    print 'Took ' + str(total_time)
+    print(str(passed) + ' documents passed.')
+    print(str(failed) + ' documents failed.')
+    print('Took ' + str(total_time))
