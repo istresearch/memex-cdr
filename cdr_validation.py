@@ -28,7 +28,7 @@ def check_required_fields(doc, crawl_fields):
         if field not in doc:
             missing_fields.append(field)
     if missing_fields:
-        return (False, "Missing required fields: "+",".join(missing_fields))
+        return (False, "Missing required fields: "+" ".join(missing_fields))
     else:
         return (True, "Passed")
 
