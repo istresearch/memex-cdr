@@ -14,19 +14,23 @@ def test_media(doc, _ids, media_fields):
     ''' Checks media fields exist as keys in doc '''    
     parent = doc.get('obj_parent')
     if parent not in _ids:
-        return (False, "Missing parent document")
+        return (False, "Missing parent document (field: obj_parent)")
     else:
-        if all(k in doc for k in media_fields):
-            return (True, "Passed")
-        else:
-            return (False, "Missing required field")
+        return check_required_fields(doc, media_fields)
 
 def test_crawl(doc, crawl_fields):
-    ''' Checks crawl fields exist as keys in doc '''        
-    if all(k in doc for k in crawl_fields):
-        return (True, "Passed")
+    return check_required_fields(doc, crawl_fields)
+
+def check_required_fields(doc, crawl_fields):
+    ''' Checks crawl fields exist as keys in doc '''
+    missing_fields = []
+    for field in crawl_fields:
+        if field not in doc:
+            missing_fields.append(field)
+    if missing_fields:
+        return (False, "Missing required fields: "+",".join(missing_fields))
     else:
-        return (False, "Missing required field")
+        return (True, "Passed")
 
 media_fields = ['_id','timestamp','content_type','obj_original_url','obj_parent','obj_stored_url','team','version']
 crawl_fields = ['_id','timestamp','content_type','crawler','extracted_metadata','extracted_text','raw_content','team','url','version']
