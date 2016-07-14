@@ -2,6 +2,7 @@ import json
 import argparse
 import gzip as gz
 import datetime
+import unicodedata
 
 def is_media(doc):
     ''' Checks whether item is media '''
@@ -32,8 +33,36 @@ def check_required_fields(doc, crawl_fields):
     else:
         return (True, "Passed")
 
+def remove_punctuation(text):
+    punctutation_cats = set(['Pc', 'Pd', 'Ps', 'Pe', 'Pi', 'Pf', 'Po'])
+    return ''.join(x for x in text if unicodedata.category(x) not in punctutation_cats)
+
+def fail_check(doc, termlists):
+    content = doc.get('raw_content')
+    result = (True, "Passed")
+    length = len(content)
+    if length < 150:
+        result = (False, "Crawl content less than 150 characters")
+    elif length >= 150:
+        content_nopunct = remove_punctuation(content)
+        content_list = content_nopunct.split(" ")
+        for list in termlists:
+            counter = 0
+            listlen = len(list)
+            for item in list:
+                if item in content_list:
+                    counter += 1
+            if counter >= listlen:
+                result = (False, "Crawl content indicates failed crawl")
+        if "requested ad could not be" in content_nopunct:
+            result = (False, "Crawl content indicates failed crawl")
+    else:
+        result = (False, "Crawl content has no length")
+    return result
+
 media_fields = ['_id','timestamp','content_type','obj_original_url','obj_parent','obj_stored_url','team','version']
 crawl_fields = ['_id','timestamp','content_type','crawler','extracted_metadata','extracted_text','raw_content','team','url','version']
+fail_keys = ["warning","return","string"],["error","404"],["domain","expired"],["annonse","ble","ikke","funnet"],["no","se","pudo","encontrar","el","anuncio","solicitado"]
 
 if __name__ == '__main__':
 
@@ -73,7 +102,9 @@ if __name__ == '__main__':
             if is_media(doc):
                 result = test_media(doc, _ids, media_fields)
             else:
-                result = test_crawl(doc, crawl_fields)
+                result = fail_check(doc,fail_keys)
+                if result[0]:
+                    result = test_crawl(doc, crawl_fields)
             _ids[_id] = result
     fp.close()
     
