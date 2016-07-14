@@ -30,7 +30,7 @@ def hash_pair(doc):
     # generate hash using url and content hash
     hash_pair = hashlib.md5(url+content_hash).hexdigest()
     
-    return hash_pair
+    return (hash_pair, url, content_hash)
 
 if __name__ == '__main__':
 
@@ -67,14 +67,21 @@ if __name__ == '__main__':
                 # iterate counter
                 input_count += 1
 
-                # generate hash pair
-                doc_hash = hash_pair(doc)
+                # generate hash objects
+                doc_hash_obj = hash_pair(doc)
+                doc_hash = doc_hash_obj[0]
+                cleaned_url = doc_hash_obj[1]
+                content_hash = doc_hash_obj[2]
 
                 # if not in unique set, add to set and write to file
                 if doc_hash not in unique_set:
 
                     # add to set
                     unique_set.add(doc_hash)
+
+                    # add hash and cleaned URL to doc
+                    doc['content_hash'] = content_hash
+                    doc['cleaned_url'] = cleaned_url
 
                     # write output
                     with gz.open(result_file, 'a') as out:
