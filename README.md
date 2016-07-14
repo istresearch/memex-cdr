@@ -49,5 +49,5 @@ Took 0:00:02.337122
 ## Interpreting the `result_file`
 The script also writes an output file which is a CSV where the first column is the `_id`, the second column is either `Passed` or `Failed` and if `Failed` there is a third column providing a rationale which is either:
 
-1. `Missing parent document`
-2. `Missing required field`
+1. `Missing parent document (field: obj_parent)`
+2. `Missing required fields: content_type version`
