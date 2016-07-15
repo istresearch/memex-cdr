@@ -35,16 +35,6 @@ def get_cleaned_url(doc):
         url = url[:-1]
     return url
 
-def write_output(doc, result_file):
-    '''
-    Takes in CDR document and writes it
-    into the result file
-    '''
-
-    # write output
-    with gz.open(result_file, 'a') as out:
-        out.write(json.dumps(doc) + '\n')
-    out.close()
 
 def get_doc_hash(url, content_hash):
     """ Return document hash. It is composed from URL and document hash. """
@@ -85,7 +75,9 @@ def deduplicate(input_path, result_path, dupe_checker):
             for line in tqdm(fp):
                 doc = json.loads(line.decode('utf8'))
                 if 'raw_content' not in doc:
-                    # document is media, not a crawl
+                    # Document is media, not a crawl; copy it as-is.
+                    # XXX: currently duplicates are not checked for media files.
+                    out.write(line)
                     continue
 
                 # generate hash objects
@@ -97,14 +89,6 @@ def deduplicate(input_path, result_path, dupe_checker):
                     # add hash and cleaned URL to doc
                     doc['content_hash'] = content_hash
                     doc['cleaned_url'] = cleaned_url
-
-                    # write output
-                    write_output(doc, result_file)
-            # write media
-            else:
-                # write output
-                write_output(doc, result_file)
-        fp.close()
 
                     out.write(json.dumps(doc).encode('utf8'))
                     out.write(b'\n')
