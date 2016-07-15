@@ -30,8 +30,8 @@ def get_cleaned_url(doc):
     Return a cleaned version of document URL. Currently
     It removes http(s):// and trailing slash.
     """
-    url = doc.get('url').split("://")[-1]
-    if url[-1] == '/':
+    url = doc.get('url').strip().split("://", 1)[-1]
+    if url[-1:] == '/':
         url = url[:-1]
     return url
 
