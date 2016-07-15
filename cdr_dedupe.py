@@ -32,6 +32,19 @@ def hash_pair(doc):
     
     return (hash_pair, url, content_hash)
 
+
+def write_output(doc, result_file):
+    '''
+    Takes in CDR document and writes it
+    into the result file
+    '''
+
+    # write output
+    with gz.open(result_file, 'a') as out:
+        out.write(json.dumps(doc) + '\n')
+    out.close()
+
+
 if __name__ == '__main__':
 
     desc='CDR Deduplication'
@@ -84,9 +97,11 @@ if __name__ == '__main__':
                     doc['cleaned_url'] = cleaned_url
 
                     # write output
-                    with gz.open(result_file, 'a') as out:
-                        out.write(json.dumps(doc)+'\n')
-                    out.close()
+                    write_output(doc, result_file)
+            # write media
+            else:
+                # write output
+                write_output(doc, result_file)
         fp.close()
 
     deduped_count = len(unique_set)
