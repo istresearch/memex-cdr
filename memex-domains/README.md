@@ -2,7 +2,7 @@ To install the `memex-domains` index template:
 
     curl -XPUT -u username:password --data @template.json https://cdr-es.istresearch.com:9200/_template/memex-domains
 
-Creation of a new monthly index is handled by `crontab` and `monthly_index.sh`. To manually create a new
+Creation of a new monthly index and updating aliases is handled by `crontab` and `monthly_index.sh`. To manually create a new
 `memex-domains_YYYY.MM` monthly index:
 
     curl -XPUT -u username:password https://cdr-es.istresearch.com:9200/memex-domains_YYYY.MM

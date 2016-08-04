@@ -2,6 +2,8 @@
     "order": 1,
     "template": "memex-domains_*",
     "settings": {
+      "number_of_shards" : 10,
+      "number_of_replicas" : 1,
       "index.analysis.filter.capture_hostname_filter.preserve_original": "false",
       "index.analysis.analyzer.hostname_analyzer.tokenizer": "keyword",
       "index.analysis.filter.capture_hostname_filter.type": "pattern_capture",
@@ -31,7 +33,7 @@
               "match_mapping_type": "string"
             }
           },
-          { 
+          {
             "extracted_metadata": {
               "path_match": "extracted_metadata.*",
               "mapping": {
@@ -39,7 +41,7 @@
               }
             }
           },
-          { 
+          {
             "extracted_metadata_children": {
               "path_match": "extracted_metadata.*.*",
               "mapping": {
@@ -1210,7 +1212,7 @@
     },
     "aliases": {
       "memex-domains": {
-        
+
       }
     }
 }
