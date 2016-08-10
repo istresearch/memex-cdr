@@ -1,0 +1,1218 @@
+{
+    "order": 1,
+    "template": "memex-domains_*",
+    "settings": {
+      "number_of_shards" : 10,
+      "number_of_replicas" : 1,
+      "index.analysis.filter.capture_hostname_filter.preserve_original": "false",
+      "index.analysis.analyzer.hostname_analyzer.tokenizer": "keyword",
+      "index.analysis.filter.capture_hostname_filter.type": "pattern_capture",
+      "index.analysis.filter.hostname_to_domain_filter.flags": "CASE_INSENSITIVE",
+      "index.analysis.filter.capture_hostname_filter.patterns.0": "https?:\/\/([^:\/]+)",
+      "index.analysis.analyzer.domain_analyzer.type": "custom",
+      "index.analysis.filter.capture_hostname_filter.flags": "CASE_INSENSITIVE",
+      "index.analysis.analyzer.domain_analyzer.filter.1": "hostname_to_domain_filter",
+      "index.analysis.analyzer.domain_analyzer.filter.0": "capture_hostname_filter",
+      "index.analysis.filter.hostname_to_domain_filter.patterns.0": "([a-z0-9\\-]+(?:\\.[a-z0-9\\-]{2,3}){1,2})$",
+      "index.analysis.analyzer.hostname_analyzer.type": "custom",
+      "index.analysis.analyzer.hostname_analyzer.filter.0": "capture_hostname_filter",
+      "index.analysis.filter.hostname_to_domain_filter.type": "pattern_capture",
+      "index.analysis.filter.hostname_to_domain_filter.preserve_original": "false",
+      "index.analysis.analyzer.domain_analyzer.tokenizer": "keyword"
+    },
+    "mappings": {
+      "_default_": {
+        "dynamic_templates": [
+          {
+            "string_fields": {
+              "mapping": {
+                "analyzer": "standard",
+                "type": "string"
+              },
+              "match": "*",
+              "match_mapping_type": "string"
+            }
+          },
+          {
+            "extracted_metadata": {
+              "path_match": "extracted_metadata.*",
+              "mapping": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "extracted_metadata_children": {
+              "path_match": "extracted_metadata.*.*",
+              "mapping": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "autonomy": {
+        "_all": {
+          "enabled": false
+        },
+        "_timestamp": {
+          "enabled": true
+        },
+        "properties": {
+          "obj_parent": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "version": {
+            "type": "float"
+          },
+          "crawl_data": {
+            "type": "object"
+          },
+          "crawler": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "team": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "timestamp": {
+            "type": "date",
+            "format": "dateOptionalTime"
+          },
+          "raw_content": {
+            "analyzer": "standard",
+            "type": "string"
+          },
+          "content_type": {
+            "type": "multi_field",
+            "fields": {
+              "content_type": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              }
+            }
+          },
+          "url": {
+            "type": "multi_field",
+            "fields": {
+              "url": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              },
+              "hostname": {
+                "type": "string",
+                "analyzer": "hostname_analyzer"
+              },
+              "domain": {
+                "type": "string",
+                "analyzer": "domain_analyzer"
+              }
+            }
+          },
+          "extracted_text": {
+            "analyzer": "standard",
+            "type": "string"
+          },
+          "extracted_metadata": {
+            "type": "object"
+          },
+          "obj_original_url": {
+            "type": "multi_field",
+            "fields": {
+              "url": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              },
+              "hostname": {
+                "type": "string",
+                "analyzer": "hostname_analyzer"
+              },
+              "domain": {
+                "type": "string",
+                "analyzer": "domain_analyzer"
+              }
+            }
+          },
+          "obj_stored_url": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "annotation1": {
+            "type": "short"
+          },
+          "annotation2": {
+            "type": "short"
+          },
+          "adjudication": {
+            "type": "short"
+          }
+        }
+      },
+      "trolls": {
+        "_all": {
+          "enabled": false
+        },
+        "_timestamp": {
+          "enabled": true
+        },
+        "properties": {
+          "obj_parent": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "crawl_data": {
+            "type": "object"
+          },
+          "crawler": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "team": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "timestamp": {
+            "type": "date",
+            "format": "dateOptionalTime"
+          },
+          "raw_content": {
+            "analyzer": "standard",
+            "type": "string"
+          },
+          "content_type": {
+            "type": "multi_field",
+            "fields": {
+              "content_type": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              }
+            }
+          },
+          "url": {
+            "type": "multi_field",
+            "fields": {
+              "url": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              },
+              "hostname": {
+                "type": "string",
+                "analyzer": "hostname_analyzer"
+              },
+              "domain": {
+                "type": "string",
+                "analyzer": "domain_analyzer"
+              }
+            }
+          },
+          "extracted_text": {
+            "analyzer": "standard",
+            "type": "string"
+          },
+          "extracted_metadata": {
+            "type": "object"
+          },
+          "obj_original_url": {
+            "type": "multi_field",
+            "fields": {
+              "url": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              },
+              "hostname": {
+                "type": "string",
+                "analyzer": "hostname_analyzer"
+              },
+              "domain": {
+                "type": "string",
+                "analyzer": "domain_analyzer"
+              }
+            }
+          },
+          "obj_stored_url": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "annotation1": {
+            "type": "short"
+          },
+          "annotation2": {
+            "type": "short"
+          },
+          "adjudication": {
+            "type": "short"
+          }
+        }
+      },
+      "microcap": {
+        "_all": {
+          "enabled": false
+        },
+        "_timestamp": {
+          "enabled": true
+        },
+        "properties": {
+          "obj_parent": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "crawl_data": {
+            "type": "object"
+          },
+          "crawler": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "team": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "timestamp": {
+            "type": "date",
+            "format": "dateOptionalTime"
+          },
+          "raw_content": {
+            "analyzer": "standard",
+            "type": "string"
+          },
+          "content_type": {
+            "type": "multi_field",
+            "fields": {
+              "content_type": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              }
+            }
+          },
+          "url": {
+            "type": "multi_field",
+            "fields": {
+              "url": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              },
+              "hostname": {
+                "type": "string",
+                "analyzer": "hostname_analyzer"
+              },
+              "domain": {
+                "type": "string",
+                "analyzer": "domain_analyzer"
+              }
+            }
+          },
+          "extracted_text": {
+            "analyzer": "standard",
+            "type": "string"
+          },
+          "extracted_metadata": {
+            "type": "object"
+          },
+          "obj_original_url": {
+            "type": "multi_field",
+            "fields": {
+              "url": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              },
+              "hostname": {
+                "type": "string",
+                "analyzer": "hostname_analyzer"
+              },
+              "domain": {
+                "type": "string",
+                "analyzer": "domain_analyzer"
+              }
+            }
+          },
+          "obj_stored_url": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "annotation1": {
+            "type": "short"
+          },
+          "annotation2": {
+            "type": "short"
+          },
+          "adjudication": {
+            "type": "short"
+          }
+        }
+      },
+      "escorts": {
+        "_all": {
+          "enabled": false
+        },
+        "_timestamp": {
+          "enabled": true
+        },
+        "properties": {
+          "obj_parent": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "crawl_data": {
+            "type": "object"
+          },
+          "crawler": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "team": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "timestamp": {
+            "type": "date",
+            "format": "dateOptionalTime"
+          },
+          "raw_content": {
+            "analyzer": "standard",
+            "type": "string"
+          },
+          "content_type": {
+            "type": "multi_field",
+            "fields": {
+              "content_type": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              }
+            }
+          },
+          "url": {
+            "type": "multi_field",
+            "fields": {
+              "url": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              },
+              "hostname": {
+                "type": "string",
+                "analyzer": "hostname_analyzer"
+              },
+              "domain": {
+                "type": "string",
+                "analyzer": "domain_analyzer"
+              }
+            }
+          },
+          "extracted_text": {
+            "analyzer": "standard",
+            "type": "string"
+          },
+          "extracted_metadata": {
+            "type": "object"
+          },
+          "obj_original_url": {
+            "type": "multi_field",
+            "fields": {
+              "url": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              },
+              "hostname": {
+                "type": "string",
+                "analyzer": "hostname_analyzer"
+              },
+              "domain": {
+                "type": "string",
+                "analyzer": "domain_analyzer"
+              }
+            }
+          },
+          "obj_stored_url": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "annotation1": {
+            "type": "short"
+          },
+          "annotation2": {
+            "type": "short"
+          },
+          "adjudication": {
+            "type": "short"
+          }
+        }
+      },
+      "labor": {
+        "_all": {
+          "enabled": false
+        },
+        "_timestamp": {
+          "enabled": true
+        },
+        "properties": {
+          "obj_parent": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "crawl_data": {
+            "type": "object"
+          },
+          "crawler": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "team": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "timestamp": {
+            "type": "date",
+            "format": "dateOptionalTime"
+          },
+          "raw_content": {
+            "analyzer": "standard",
+            "type": "string"
+          },
+          "content_type": {
+            "type": "multi_field",
+            "fields": {
+              "content_type": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              }
+            }
+          },
+          "url": {
+            "type": "multi_field",
+            "fields": {
+              "url": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              },
+              "hostname": {
+                "type": "string",
+                "analyzer": "hostname_analyzer"
+              },
+              "domain": {
+                "type": "string",
+                "analyzer": "domain_analyzer"
+              }
+            }
+          },
+          "extracted_text": {
+            "analyzer": "standard",
+            "type": "string"
+          },
+          "extracted_metadata": {
+            "type": "object"
+          },
+          "obj_original_url": {
+            "type": "multi_field",
+            "fields": {
+              "url": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              },
+              "hostname": {
+                "type": "string",
+                "analyzer": "hostname_analyzer"
+              },
+              "domain": {
+                "type": "string",
+                "analyzer": "domain_analyzer"
+              }
+            }
+          },
+          "obj_stored_url": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "annotation1": {
+            "type": "short"
+          },
+          "annotation2": {
+            "type": "short"
+          },
+          "adjudication": {
+            "type": "short"
+          }
+        }
+      },
+      "persona": {
+        "_all": {
+          "enabled": false
+        },
+        "_timestamp": {
+          "enabled": true
+        },
+        "properties": {
+          "obj_parent": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "crawl_data": {
+            "type": "object"
+          },
+          "crawler": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "team": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "timestamp": {
+            "type": "date",
+            "format": "dateOptionalTime"
+          },
+          "raw_content": {
+            "analyzer": "standard",
+            "type": "string"
+          },
+          "content_type": {
+            "type": "multi_field",
+            "fields": {
+              "content_type": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              }
+            }
+          },
+          "url": {
+            "type": "multi_field",
+            "fields": {
+              "url": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              },
+              "hostname": {
+                "type": "string",
+                "analyzer": "hostname_analyzer"
+              },
+              "domain": {
+                "type": "string",
+                "analyzer": "domain_analyzer"
+              }
+            }
+          },
+          "extracted_text": {
+            "analyzer": "standard",
+            "type": "string"
+          },
+          "extracted_metadata": {
+            "type": "object"
+          },
+          "obj_original_url": {
+            "type": "multi_field",
+            "fields": {
+              "url": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              },
+              "hostname": {
+                "type": "string",
+                "analyzer": "hostname_analyzer"
+              },
+              "domain": {
+                "type": "string",
+                "analyzer": "domain_analyzer"
+              }
+            }
+          },
+          "obj_stored_url": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "annotation1": {
+            "type": "short"
+          },
+          "annotation2": {
+            "type": "short"
+          },
+          "adjudication": {
+            "type": "short"
+          }
+        }
+      },
+      "qcr": {
+        "_all": {
+          "enabled": false
+        },
+        "_timestamp": {
+          "enabled": true
+        },
+        "properties": {
+          "obj_parent": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "crawl_data": {
+            "type": "object"
+          },
+          "crawler": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "team": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "timestamp": {
+            "type": "date",
+            "format": "dateOptionalTime"
+          },
+          "raw_content": {
+            "analyzer": "standard",
+            "type": "string"
+          },
+          "content_type": {
+            "type": "multi_field",
+            "fields": {
+              "content_type": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              }
+            }
+          },
+          "url": {
+            "type": "multi_field",
+            "fields": {
+              "url": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              },
+              "hostname": {
+                "type": "string",
+                "analyzer": "hostname_analyzer"
+              },
+              "domain": {
+                "type": "string",
+                "analyzer": "domain_analyzer"
+              }
+            }
+          },
+          "extracted_text": {
+            "analyzer": "standard",
+            "type": "string"
+          },
+          "extracted_metadata": {
+            "type": "object"
+          },
+          "obj_original_url": {
+            "type": "multi_field",
+            "fields": {
+              "url": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              },
+              "hostname": {
+                "type": "string",
+                "analyzer": "hostname_analyzer"
+              },
+              "domain": {
+                "type": "string",
+                "analyzer": "domain_analyzer"
+              }
+            }
+          },
+          "obj_stored_url": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "annotation1": {
+            "type": "short"
+          },
+          "annotation2": {
+            "type": "short"
+          },
+          "adjudication": {
+            "type": "short"
+          }
+        }
+      },
+      "electronics": {
+        "_all": {
+          "enabled": false
+        },
+        "_timestamp": {
+          "enabled": true
+        },
+        "properties": {
+          "obj_parent": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "crawl_data": {
+            "type": "object"
+          },
+          "crawler": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "team": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "timestamp": {
+            "type": "date",
+            "format": "dateOptionalTime"
+          },
+          "raw_content": {
+            "analyzer": "standard",
+            "type": "string"
+          },
+          "content_type": {
+            "type": "multi_field",
+            "fields": {
+              "content_type": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              }
+            }
+          },
+          "url": {
+            "type": "multi_field",
+            "fields": {
+              "url": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              },
+              "hostname": {
+                "type": "string",
+                "analyzer": "hostname_analyzer"
+              },
+              "domain": {
+                "type": "string",
+                "analyzer": "domain_analyzer"
+              }
+            }
+          },
+          "extracted_text": {
+            "analyzer": "standard",
+            "type": "string"
+          },
+          "extracted_metadata": {
+            "type": "object"
+          },
+          "obj_original_url": {
+            "type": "multi_field",
+            "fields": {
+              "url": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              },
+              "hostname": {
+                "type": "string",
+                "analyzer": "hostname_analyzer"
+              },
+              "domain": {
+                "type": "string",
+                "analyzer": "domain_analyzer"
+              }
+            }
+          },
+          "obj_stored_url": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "annotation1": {
+            "type": "short"
+          },
+          "annotation2": {
+            "type": "short"
+          },
+          "adjudication": {
+            "type": "short"
+          }
+        }
+      },
+      "pyramid": {
+        "_all": {
+          "enabled": false
+        },
+        "_timestamp": {
+          "enabled": true
+        },
+        "properties": {
+          "obj_parent": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "crawl_data": {
+            "type": "object"
+          },
+          "crawler": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "team": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "timestamp": {
+            "type": "date",
+            "format": "dateOptionalTime"
+          },
+          "raw_content": {
+            "analyzer": "standard",
+            "type": "string"
+          },
+          "content_type": {
+            "type": "multi_field",
+            "fields": {
+              "content_type": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              }
+            }
+          },
+          "url": {
+            "type": "multi_field",
+            "fields": {
+              "url": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              },
+              "hostname": {
+                "type": "string",
+                "analyzer": "hostname_analyzer"
+              },
+              "domain": {
+                "type": "string",
+                "analyzer": "domain_analyzer"
+              }
+            }
+          },
+          "extracted_text": {
+            "analyzer": "standard",
+            "type": "string"
+          },
+          "extracted_metadata": {
+            "type": "object"
+          },
+          "obj_original_url": {
+            "type": "multi_field",
+            "fields": {
+              "url": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              },
+              "hostname": {
+                "type": "string",
+                "analyzer": "hostname_analyzer"
+              },
+              "domain": {
+                "type": "string",
+                "analyzer": "domain_analyzer"
+              }
+            }
+          },
+          "obj_stored_url": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "annotation1": {
+            "type": "short"
+          },
+          "annotation2": {
+            "type": "short"
+          },
+          "adjudication": {
+            "type": "short"
+          }
+        }
+      },
+      "weapons": {
+        "_all": {
+          "enabled": false
+        },
+        "_timestamp": {
+          "enabled": true
+        },
+        "properties": {
+          "obj_parent": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "crawl_data": {
+            "type": "object"
+          },
+          "crawler": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "team": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "timestamp": {
+            "type": "date",
+            "format": "dateOptionalTime"
+          },
+          "raw_content": {
+            "analyzer": "standard",
+            "type": "string"
+          },
+          "content_type": {
+            "type": "multi_field",
+            "fields": {
+              "content_type": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              }
+            }
+          },
+          "url": {
+            "type": "multi_field",
+            "fields": {
+              "url": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              },
+              "hostname": {
+                "type": "string",
+                "analyzer": "hostname_analyzer"
+              },
+              "domain": {
+                "type": "string",
+                "analyzer": "domain_analyzer"
+              }
+            }
+          },
+          "extracted_text": {
+            "analyzer": "standard",
+            "type": "string"
+          },
+          "extracted_metadata": {
+            "type": "object"
+          },
+          "obj_original_url": {
+            "type": "multi_field",
+            "fields": {
+              "url": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              },
+              "hostname": {
+                "type": "string",
+                "analyzer": "hostname_analyzer"
+              },
+              "domain": {
+                "type": "string",
+                "analyzer": "domain_analyzer"
+              }
+            }
+          },
+          "obj_stored_url": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "annotation1": {
+            "type": "short"
+          },
+          "annotation2": {
+            "type": "short"
+          },
+          "adjudication": {
+            "type": "short"
+          }
+        }
+      },
+      "other": {
+        "_all": {
+          "enabled": false
+        },
+        "_timestamp": {
+          "enabled": true
+        },
+        "properties": {
+          "obj_parent": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "crawl_data": {
+            "type": "object"
+          },
+          "crawler": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "team": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "timestamp": {
+            "type": "date",
+            "format": "dateOptionalTime"
+          },
+          "raw_content": {
+            "analyzer": "standard",
+            "type": "string"
+          },
+          "content_type": {
+            "type": "multi_field",
+            "fields": {
+              "content_type": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              }
+            }
+          },
+          "url": {
+            "type": "multi_field",
+            "fields": {
+              "url": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              },
+              "hostname": {
+                "type": "string",
+                "analyzer": "hostname_analyzer"
+              },
+              "domain": {
+                "type": "string",
+                "analyzer": "domain_analyzer"
+              }
+            }
+          },
+          "extracted_text": {
+            "analyzer": "standard",
+            "type": "string"
+          },
+          "extracted_metadata": {
+            "type": "object"
+          },
+          "obj_original_url": {
+            "type": "multi_field",
+            "fields": {
+              "url": {
+                "type": "string"
+              },
+              "exact": {
+                "type": "string",
+                "analyzer": "keyword"
+              },
+              "hostname": {
+                "type": "string",
+                "analyzer": "hostname_analyzer"
+              },
+              "domain": {
+                "type": "string",
+                "analyzer": "domain_analyzer"
+              }
+            }
+          },
+          "obj_stored_url": {
+            "type": "string",
+            "analyzer": "keyword"
+          },
+          "annotation1": {
+            "type": "short"
+          },
+          "annotation2": {
+            "type": "short"
+          },
+          "adjudication": {
+            "type": "short"
+          }
+        }
+      }
+    },
+    "aliases": {
+      "memex-domains": {
+
+      }
+    }
+}
