@@ -82,7 +82,7 @@ if __name__ == '__main__':
     result_file = args.result_file
 
     # generate input _ids dictionary
-    _ids = {}
+    _ids = set()
 
     # capture start time
     start = datetime.datetime.now()
@@ -91,9 +91,14 @@ if __name__ == '__main__':
     with gz.open(input_file,'r') as fp:
         for line in fp:
             _id = json.loads(line).get('_id')
-            _ids[_id] = ''
+            _ids.add(_id)
         fp.close()
     
+    _ids = frozenset(_ids)
+
+    passed = 0
+    failed = 0
+
     # using _ids dictionary, iterate over input and test fields
     with gz.open(input_file,'r') as fp:
         for line in fp:
@@ -105,25 +110,19 @@ if __name__ == '__main__':
                 result = fail_check(doc,fail_keys)
                 if result[0]:
                     result = test_crawl(doc, crawl_fields)
-            _ids[_id] = result
+                # write output file
+            with open(result_file, 'a') as fp:
+                if result[0]:
+                    res = 'Passed'
+                    fp.write(str(_id) + ',' + res + '\n')
+                    passed += 1
+                else:
+                    res = 'Failed'
+                    reason = result[1]
+                    fp.write(str(_id) + ',' + res + ',' + reason + '\n')
+                    failed +=1
+            fp.close()                    
     fp.close()
-    
-    passed = 0
-    failed = 0
-    
-    # write output file
-    with open(result_file, 'a') as fp:
-        for item in _ids.iteritems():
-            if item[1][0]:
-                res = 'Passed'
-                fp.write(str(item[0]) + ',' + res + '\n')
-                passed += 1
-            else:
-                res = 'Failed'
-                reason = item[1][1]
-                fp.write(str(item[0]) + ',' + res + ',' + reason + '\n')
-                failed +=1
-        fp.close()
 
     end = datetime.datetime.now()
     total_time = end - start
